@@ -32,13 +32,12 @@ public:
 
         if (!base) return false;
 
-        // Step 1: static_fields = typeinfo + offsets::base_networkable::static_fields
+        
         uint64_t static_fields_ptr = m.read<uint64_t>(base + offsets::base_networkable::static_fields);
         if (do_log) dbg::log(static_fields_ptr ? "OK" : "FAIL", "[NET] static_fields=0x%016I64X", (unsigned long long)static_fields_ptr);
         if (!static_fields_ptr) return false;
 
-        // Step 2: ce_obj = static_fields + offsets::base_networkable::client_entities, decrypt -> client_entities
-        // Your dump shows client_entities = 0x20 (older code used 0x18, which yields null).
+        
         uint64_t ce_obj = m.read<uint64_t>(static_fields_ptr + offsets::base_networkable::client_entities);
         if (do_log) dbg::log(ce_obj ? "OK" : "FAIL", "[NET] ce_obj=0x%016I64X", (unsigned long long)ce_obj);
         if (!ce_obj) return false;
@@ -47,7 +46,7 @@ public:
         if (do_log) dbg::log(client_entities ? "OK" : "FAIL", "[NET] client_entities=0x%016I64X", (unsigned long long)client_entities);
         if (!client_entities) return false;
 
-        // Probe all candidate offsets in client_entities to find the one with highest count
+       
         static bool ce_probed = false;
         if (do_log && !ce_probed) {
             ce_probed = true;
@@ -61,7 +60,7 @@ public:
             }
         }
 
-        // Step 3: el_obj = client_entities + offsets::base_networkable::entity_list, decrypt_list -> entity_list
+        
         uint64_t el_obj = m.read<uint64_t>(client_entities + offsets::base_networkable::entity_list);
         if (do_log) dbg::log(el_obj ? "OK" : "FAIL", "[NET] el_obj=0x%016I64X", (unsigned long long)el_obj);
         if (!el_obj) return false;
@@ -70,8 +69,7 @@ public:
         if (do_log) dbg::log(entity_list ? "OK" : "FAIL", "[NET] entity_list=0x%016I64X", (unsigned long long)entity_list);
         if (!entity_list) return false;
 
-        // Step 4: object_dictionary pointer inside entity_list (plain ptr, no decrypt)
-        // Many dumps place this at +0x18; if it still fails, we can switch to offsets::base_networkable::object_dictionary.
+        
         uint64_t object_dict = m.read<uint64_t>(entity_list + offsets::base_networkable::entLS);
         if (do_log) dbg::log(object_dict ? "OK" : "FAIL", "[NET] object_dict=0x%016I64X", (unsigned long long)object_dict);
         if (!object_dict) return false;
@@ -111,7 +109,7 @@ public:
         uint64_t step1 = m.read<uint64_t>(base + offsets::Camera::staticfields);
         if (do_log) dbg::log(step1 ? "OK" : "FAIL", "[CAM] step1 +staticfields(0x%I64X)=0x%016I64X", (unsigned long long)offsets::Camera::staticfields, (unsigned long long)step1);
 
-        // One-shot dump: scan step1 for non-zero pointers to find real wrapperclass offset
+       
         static bool cam_dumped = false;
         if (step1 && !cam_dumped) {
             cam_dumped = true;
@@ -122,7 +120,7 @@ public:
             }
         }
 
-        // instance is directly at offsets::main_camera::instance in static_fields
+       
         uint64_t instance_ptr = m.read<uint64_t>(step1 + offsets::main_camera::instance);
         if (do_log) dbg::log(instance_ptr ? "OK" : "FAIL", "[CAM] instance +0x%I64X=0x%016I64X",
             (unsigned long long)offsets::main_camera::instance, (unsigned long long)instance_ptr);
