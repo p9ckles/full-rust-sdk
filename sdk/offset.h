@@ -218,9 +218,7 @@ namespace offsets {
         inline uint64_t updateinterval = 0x1C;
     }
 
-    // -----------------------------------------------------------------------
-    // Legacy aliases - keep these so existing code compiles unchanged
-    // -----------------------------------------------------------------------
+    
     inline uint64_t base = Il2cpp::base;
     inline uint64_t entitylist = base_networkable::typeinfo;
     inline uint64_t staticfields = base_networkable::static_fields;
