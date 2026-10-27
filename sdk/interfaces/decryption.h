@@ -30,7 +30,7 @@ namespace decryption {
 
     // Decryption functions - verified by rust-dumper 2026-05-02
     namespace BaseNetworkable {
-        // a1 = EntityRealm object ptr, reads encrypted GCHandle from +0x18
+        
         inline uintptr_t decrypt(std::uintptr_t a1)
         {
             std::uintptr_t raw = m.read<std::uintptr_t>(a1 + 0x18);
@@ -57,7 +57,7 @@ namespace decryption {
             return get_handle(rax);
         }
 
-        // a1 = entity list object ptr, reads encrypted GCHandle from +0x18
+        
         inline uintptr_t decrypt_list(std::uintptr_t a1)
         {
             std::uintptr_t rax = m.read<std::uintptr_t>(a1 + 0x18);
@@ -83,7 +83,7 @@ namespace decryption {
     }
 
     namespace BasePlayer {
-        // a1 = encrypted cl_active_item value (not a pointer, raw encrypted value)
+       
         inline std::uintptr_t decrypt_clActiveItem(uintptr_t a1)
         {
             uintptr_t val = a1;
@@ -127,7 +127,7 @@ namespace decryption {
         {
             uintptr_t val = m.read<uintptr_t>(a1 + 0x10);
 
-            // no transformation at all
+          
             return get_handle(*reinterpret_cast<uint32_t*>(val));
         }
     }
@@ -152,7 +152,7 @@ namespace decryption {
         return decrypt_value(val);
     }
 
-    // Add this if you use get_component_name
+   
     inline uint64_t get_component_name(uint64_t game_object, const char* component_name) {
         uint64_t game_object_class = m.read<uint64_t>(game_object + 0x30);
 
@@ -184,7 +184,7 @@ namespace decryption {
         return -1;
     }
 
-    // Backward-compatible legacy wrappers.
+    
     inline uint64_t decrypt_base_networkable(uint64_t a1) {
         return BaseNetworkable::decrypt(a1);
     }
